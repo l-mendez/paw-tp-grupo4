@@ -16,24 +16,13 @@
   <!-- FIXME change it to the project's website -->
   <url>http://www.example.com</url>
 
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.source>8</maven.compiler.source>
-    <maven.compiler.target>8</maven.compiler.target>
-  </properties>
-  
-  <dependenctManagement>
-    <dependencies>
-    <dependency>
-      <groupId=org.junit</groupId>
-      <artifactId>junit-bom</artifactId>
-      <version>5.11.0</version>
-      <type>pom</type>
-      <scope>import</scope>
-    </dependency>
-    </dependencies>
-  </dependencyManagement>
-  
+  <dependencies>
+	  <dependency>
+		  <groupId>org.springframework</groupId>
+		  <artifactId>spring-webmvc</artifactId>
+  	  </dependency>
+  </dependencies>
+
   <build>
     <finalName>webapp</finalName>
     <pluginManagement><!-- lock down plugins versions to avoid using Maven defaults (may be moved to parent pom) -->
@@ -67,6 +56,15 @@
           <artifactId>maven-deploy-plugin</artifactId>
           <version>3.1.2</version>
         </plugin>
+	<plugin>
+	  <groupId>org.eclipse.jetty</groupId>
+    <artifactId>jetty-maven-plugin</artifactId>
+	  <version>9.4.58.v20250814</version>
+	  <configuration>
+	    <scanIntervalSeconds>10</scanIntervalSeconds>
+	    <port>8080</port>
+    </configuration>
+	</plugin>
       </plugins>
     </pluginManagement>
   </build>
