@@ -22,7 +22,6 @@
 				<artifactId>spring-webmvc</artifactId>
 				<version>${spring-version}</version>
 			  </dependency>
-			  <!-- JUnit -->
 			  <dependency>
 				<groupId>org.junit</groupId>
 				<artifactId>junit-bom</artifactId>
