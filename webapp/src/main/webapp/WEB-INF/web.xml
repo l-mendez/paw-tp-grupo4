@@ -34,6 +34,6 @@
 
 	<servlet-mapping>
 		<servlet-name>dispatcher</servlet-name>
-		<url-mapping>/</url-mapping>
+		<url-pattern>/</url-pattern>
 	</servlet-mapping>
 </web-app>
