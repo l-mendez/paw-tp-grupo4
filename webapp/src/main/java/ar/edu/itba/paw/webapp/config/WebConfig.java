@@ -11,7 +11,7 @@ import org.springframework.web.servlet.view.JstlView;
 
 @EnableWebMvc
 @Configuration
-@ComponentScan("ar.edu.itba.paw.webapp.controller")
+@ComponentScan({"ar.edu.itba.paw.webapp.controller", "ar.edu.itba.paw.services"})
 public class WebConfig implements WebMvcConfigurer {
 
     @Bean
