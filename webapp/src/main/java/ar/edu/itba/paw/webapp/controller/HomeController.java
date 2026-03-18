@@ -16,20 +16,6 @@ public class HomeController {
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public ModelAndView home() {
         final ModelAndView mav = new ModelAndView("index");
-
-        // Text component parameters
-        mav.addObject("heading", "Welcome to PAW");
-        mav.addObject("subtitle", "A Spring MVC Web Application");
-        mav.addObject("bodyText", "This page demonstrates all custom tag components.");
-
-        // Button component parameters
-        mav.addObject("buttonText", "Click Me");
-        mav.addObject("buttonSize", "lg");
-
-        // Toast component parameters
-        mav.addObject("toastTitle", "Notification");
-        mav.addObject("toastMessage", "Application loaded successfully!");
-
         return mav;
     }
 }
