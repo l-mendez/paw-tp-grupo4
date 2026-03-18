@@ -17,6 +17,12 @@
     <c:when test="${textType == 'subtitle'}">
         <h3 class="text-subtitle ${extraClass}"><c:out value="${text}" /></h3>
     </c:when>
+    <c:when test="${textType == 'label'}">
+        <label class="text-label ${extraClass}"><c:out value="${text}" /></label>
+    </c:when>
+    <c:when test="${textType == 'caption'}">
+        <span class="text-caption ${extraClass}"><c:out value="${text}" /></span>
+    </c:when>
     <c:otherwise>
         <p class="text-body ${extraClass}"><c:out value="${text}" /></p>
     </c:otherwise>
