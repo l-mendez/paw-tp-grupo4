@@ -45,6 +45,7 @@ public class GoalJdbcDaoTest {
     @Test
     public void findAllCategories_categoriesHaveCorrectFields() {
         final List<GoalCategory> categories = goalDao.findAllCategories();
+        assertFalse(categories.isEmpty());
         final GoalCategory sleep = categories.get(0);
 
         assertEquals(SLEEP_CATEGORY_ID, sleep.getId());

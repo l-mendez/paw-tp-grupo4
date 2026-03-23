@@ -41,7 +41,9 @@ public class InterventionJdbcDaoTest {
 
     @Test
     public void findAllCategories_categoriesHaveCorrectFields() {
-        final InterventionCategory supplements = interventionDao.findAllCategories().get(0);
+        final List<InterventionCategory> categories = interventionDao.findAllCategories();
+        assertFalse(categories.isEmpty());
+        final InterventionCategory supplements = categories.get(0);
 
         assertEquals(SUPPLEMENTS_CATEGORY_ID, supplements.getId());
         assertEquals("Suplementos", supplements.getLabel());

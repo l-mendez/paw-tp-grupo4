@@ -68,6 +68,19 @@ public class ProtocolServiceImplTest {
         assertEquals(ProtocolFilter.SortBy.RATING, filter.getSortBy());
     }
 
+    // ── search: page clamping ──
+
+    @Test
+    public void search_negativePage_clampedToZero() {
+        final ProtocolFilter filter = new ProtocolFilter();
+        filter.setPage(-1);
+        when(protocolDao.search(any())).thenReturn(new PaginatedResult<>(Collections.emptyList(), 0, 12, 0));
+
+        protocolService.search(filter);
+
+        assertEquals(0, filter.getPage());
+    }
+
     // ── search: pageSize clamping ──
 
     @Test

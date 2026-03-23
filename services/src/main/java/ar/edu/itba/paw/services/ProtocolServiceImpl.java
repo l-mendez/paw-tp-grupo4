@@ -27,6 +27,9 @@ public class ProtocolServiceImpl implements ProtocolService {
         if (filter.getSortBy() == null) {
             filter.setSortBy(ProtocolFilter.SortBy.NEWEST);
         }
+        if (filter.getPage() < 0) {
+            filter.setPage(0);
+        }
         if (filter.getPageSize() > 50) {
             filter.setPageSize(50);
         }

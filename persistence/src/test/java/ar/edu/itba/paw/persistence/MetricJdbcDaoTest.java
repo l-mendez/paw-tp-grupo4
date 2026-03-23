@@ -41,7 +41,9 @@ public class MetricJdbcDaoTest {
 
     @Test
     public void findAllCategories_categoriesHaveCorrectFields() {
-        final MetricCategory biometrics = metricDao.findAllCategories().get(0);
+        final List<MetricCategory> categories = metricDao.findAllCategories();
+        assertFalse(categories.isEmpty());
+        final MetricCategory biometrics = categories.get(0);
 
         assertEquals(BIOMETRICS_CATEGORY_ID, biometrics.getId());
         assertEquals("Biométricas", biometrics.getLabel());
@@ -62,7 +64,9 @@ public class MetricJdbcDaoTest {
 
     @Test
     public void findAll_metricsHaveCorrectFields() {
-        final Metric hrv = metricDao.findAll().get(0);
+        final List<Metric> metrics = metricDao.findAll();
+        assertFalse(metrics.isEmpty());
+        final Metric hrv = metrics.get(0);
 
         assertEquals("HRV", hrv.getLabel());
         assertEquals("ms", hrv.getUnit());
