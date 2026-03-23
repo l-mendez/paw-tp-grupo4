@@ -7,14 +7,6 @@
     <version>1.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>service-contracts</artifactId>
-  <name>service-contracts</name>
-
-  <dependencies>
-    <dependency>
-      <groupId>ar.edu.itba.paw</groupId>
-      <artifactId>models</artifactId>
-      <version>1.0-SNAPSHOT</version>
-    </dependency>
-  </dependencies>
+  <artifactId>models</artifactId>
+  <name>models</name>
 </project>
