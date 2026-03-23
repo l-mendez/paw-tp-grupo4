@@ -12,6 +12,7 @@ import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
 public class UserJdbcDao implements UserDao {
@@ -22,9 +23,10 @@ public class UserJdbcDao implements UserDao {
     private static final RowMapper<User> ROW_MAPPER = (rs, rowNum) -> {
         final java.sql.Timestamp ts = rs.getTimestamp("created_at");
         return new User(
-                rs.getLong("user_id"),
+                UUID.fromString(rs.getString("id")),
                 rs.getString("email"),
                 rs.getString("username"),
+                rs.getString("display_name"),
                 ts != null ? ts.toLocalDateTime() : java.time.LocalDateTime.now()
         );
     };
@@ -34,7 +36,7 @@ public class UserJdbcDao implements UserDao {
         this.jdbcTemplate = new JdbcTemplate(ds);
         this.jdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("users")
-                .usingGeneratedKeyColumns("user_id");
+                .usingColumns("id", "email", "username", "display_name", "password_hash");
     }
 
     @Override
@@ -49,9 +51,12 @@ public class UserJdbcDao implements UserDao {
         final Map<String, Object> args = new HashMap<>();
         args.put("email", email);
         args.put("username", username);
-        args.put("password", "");
+        args.put("display_name", username);
+        args.put("password_hash", "");
 
-        final Number userId = jdbcInsert.executeAndReturnKey(args);
-        return new User(userId.longValue(), email, username, java.time.LocalDateTime.now());
+        final UUID id = UUID.randomUUID();
+        args.put("id", id);
+        jdbcInsert.execute(args);
+        return new User(id, email, username, username, java.time.LocalDateTime.now());
     }
 }

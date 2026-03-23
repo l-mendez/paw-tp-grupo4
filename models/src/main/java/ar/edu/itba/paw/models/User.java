@@ -1,23 +1,27 @@
 package ar.edu.itba.paw.models;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 public class User {
 
-    private final long userId;
+    private final UUID id;
     private final String email;
     private final String username;
+    private final String displayName;
     private final LocalDateTime createdAt;
 
-    public User(final long userId, final String email, final String username, final LocalDateTime createdAt) {
-        this.userId = userId;
+    public User(final UUID id, final String email, final String username,
+                final String displayName, final LocalDateTime createdAt) {
+        this.id = id;
         this.email = email;
         this.username = username;
+        this.displayName = displayName;
         this.createdAt = createdAt;
     }
 
-    public long getUserId() {
-        return userId;
+    public UUID getId() {
+        return id;
     }
 
     public String getEmail() {
@@ -26,6 +30,10 @@ public class User {
 
     public String getUsername() {
         return username;
+    }
+
+    public String getDisplayName() {
+        return displayName;
     }
 
     public LocalDateTime getCreatedAt() {

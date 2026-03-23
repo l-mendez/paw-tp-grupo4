@@ -4,6 +4,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
+import org.springframework.jdbc.datasource.init.CompositeDatabasePopulator;
 import org.springframework.jdbc.datasource.init.DataSourceInitializer;
 import org.springframework.jdbc.datasource.init.DatabasePopulator;
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
@@ -64,8 +65,18 @@ public class WebConfig implements WebMvcConfigurer {
     }
 
     private DatabasePopulator databasePopulator() {
-        final ResourceDatabasePopulator populator = new ResourceDatabasePopulator();
-        populator.addScript(new ClassPathResource("schema.sql"));
-        return populator;
+        final ResourceDatabasePopulator schemaPopulator = new ResourceDatabasePopulator();
+        schemaPopulator.addScript(new ClassPathResource("schema.sql"));
+
+        final ResourceDatabasePopulator functionsPopulator = new ResourceDatabasePopulator();
+        functionsPopulator.setSeparator(";;");
+        functionsPopulator.addScript(new ClassPathResource("functions.sql"));
+
+        final ResourceDatabasePopulator seedPopulator = new ResourceDatabasePopulator();
+        seedPopulator.addScript(new ClassPathResource("seed.sql"));
+
+        final CompositeDatabasePopulator composite = new CompositeDatabasePopulator();
+        composite.addPopulators(schemaPopulator, functionsPopulator, seedPopulator);
+        return composite;
     }
 }
