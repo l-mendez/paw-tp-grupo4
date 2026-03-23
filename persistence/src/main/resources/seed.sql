@@ -237,3 +237,324 @@ INSERT INTO achievements (slug, name, description, icon, category, criteria, poi
     ('hundred_logs',         'Data machine',             'Registraste 100 log entries en total',                   'database',  'general',  '{"type": "count", "entity": "logs", "threshold": 100}',               75,  14),
     ('five_hundred_logs',    'Obsesivo de los datos',    'Registraste 500 log entries en total',                   'database',  'general',  '{"type": "count", "entity": "logs", "threshold": 500}',               250, 15)
 ON CONFLICT (slug) DO NOTHING;
+
+
+-- ════════════════════════════════════════════════════════════
+-- 5. SEED USERS (test creators)
+-- ════════════════════════════════════════════════════════════
+
+INSERT INTO users (id, email, password_hash, display_name, username, role) VALUES
+    -- All seed users use password: password123
+    ('a0000000-0000-0000-0000-000000000001', 'creator1@biostack.test', '$2a$10$mGKnw7P3Ag7yKy1SBhhU.ueH2gkdYC3mscLKKFiPcVNCl0qkEHvb.', 'Dr. Marcos Vitale', 'marcos_vitale', 'creator'),
+    ('a0000000-0000-0000-0000-000000000002', 'creator2@biostack.test', '$2a$10$mGKnw7P3Ag7yKy1SBhhU.ueH2gkdYC3mscLKKFiPcVNCl0qkEHvb.', 'Sofía Neuhaus',    'sofia_neuhaus',  'creator'),
+    ('a0000000-0000-0000-0000-000000000003', 'explorer1@biostack.test','$2a$10$mGKnw7P3Ag7yKy1SBhhU.ueH2gkdYC3mscLKKFiPcVNCl0qkEHvb.', 'Juan Explorador',  'juan_explorer',  'explorer'),
+    ('a0000000-0000-0000-0000-000000000004', 'explorer2@biostack.test','$2a$10$mGKnw7P3Ag7yKy1SBhhU.ueH2gkdYC3mscLKKFiPcVNCl0qkEHvb.', 'Ana Biohacker',    'ana_biohacker',  'explorer'),
+    ('a0000000-0000-0000-0000-000000000005', 'explorer3@biostack.test','$2a$10$mGKnw7P3Ag7yKy1SBhhU.ueH2gkdYC3mscLKKFiPcVNCl0qkEHvb.', 'Leo Data',         'leo_data',       'explorer')
+ON CONFLICT (email) DO NOTHING;
+
+
+-- ════════════════════════════════════════════════════════════
+-- 6. SEED PROTOCOLS
+-- ════════════════════════════════════════════════════════════
+
+INSERT INTO protocols (id, creator_id, goal_id, title, description, duration_days, status, visibility, tags) VALUES
+    -- 1. Sleep optimization
+    ('b0000000-0000-0000-0000-000000000001',
+     'a0000000-0000-0000-0000-000000000001',
+     (SELECT id FROM goals WHERE name = 'better_sleep_quality'),
+     'Optimización de sueño profundo',
+     'Protocolo integral para mejorar la calidad de sueño combinando suplementación con magnesio y melatonina, reducción de luz azul y horario fijo de sueño. Basado en las recomendaciones de Andrew Huberman.',
+     30, 'active', 'public',
+     ARRAY['sueño', 'melatonina', 'magnesio', 'huberman']),
+
+    -- 2. Cognitive stack
+    ('b0000000-0000-0000-0000-000000000002',
+     'a0000000-0000-0000-0000-000000000001',
+     (SELECT id FROM goals WHERE name = 'improve_focus'),
+     'Stack nootrópico para concentración',
+     'Combinación de L-Teanina + Cafeína con meditación matutina y breathwork nasal. Diseñado para maximizar horas de deep work.',
+     60, 'active', 'public',
+     ARRAY['nootrópicos', 'concentración', 'deep-work', 'cafeína']),
+
+    -- 3. Cold exposure + breathing
+    ('b0000000-0000-0000-0000-000000000003',
+     'a0000000-0000-0000-0000-000000000002',
+     (SELECT id FROM goals WHERE name = 'reduce_inflammation'),
+     'Wim Hof: frío + respiración',
+     'Protocolo basado en el método Wim Hof: exposición progresiva al frío combinada con respiración cíclica. Ideal para reducir inflamación y mejorar resiliencia.',
+     21, 'recruiting', 'public',
+     ARRAY['wim-hof', 'frío', 'respiración', 'inflamación']),
+
+    -- 4. Strength protocol
+    ('b0000000-0000-0000-0000-000000000004',
+     'a0000000-0000-0000-0000-000000000002',
+     (SELECT id FROM goals WHERE name = 'gain_muscle'),
+     'Fuerza + Creatina 12 semanas',
+     'Programa de hipertrofia de 12 semanas con suplementación de creatina monohidrato (5g/día). Incluye entrenamiento de fuerza 4x/semana y tracking de 1RM estimado.',
+     90, 'active', 'public',
+     ARRAY['fuerza', 'creatina', 'hipertrofia', 'gym']),
+
+    -- 5. Anxiety management
+    ('b0000000-0000-0000-0000-000000000005',
+     'a0000000-0000-0000-0000-000000000001',
+     (SELECT id FROM goals WHERE name = 'reduce_anxiety'),
+     'Manejo de ansiedad con meditación',
+     'Protocolo de 4 semanas para reducir ansiedad combinando meditación guiada (20 min/día), ashwagandha y journaling. Enfoque en regulación del sistema nervioso.',
+     28, 'completed', 'public',
+     ARRAY['ansiedad', 'meditación', 'ashwagandha', 'mindfulness']),
+
+    -- 6. Intermittent fasting
+    ('b0000000-0000-0000-0000-000000000006',
+     'a0000000-0000-0000-0000-000000000002',
+     (SELECT id FROM goals WHERE name = 'body_composition'),
+     'Ayuno intermitente 16:8',
+     'Protocolo de ayuno intermitente con ventana de alimentación de 8 horas. Incluye tracking de peso, composición corporal y niveles de energía percibida.',
+     45, 'active', 'public',
+     ARRAY['ayuno', 'nutrición', '16:8', 'composición-corporal']),
+
+    -- 7. Morning routine
+    ('b0000000-0000-0000-0000-000000000007',
+     'a0000000-0000-0000-0000-000000000001',
+     (SELECT id FROM goals WHERE name = 'boost_daily_energy'),
+     'Rutina matutina de alta energía',
+     'Protocolo corto de 2 semanas: exposición a luz solar en los primeros 30 min, breathwork y caminata de 15 min. Sin suplementos.',
+     14, 'active', 'public',
+     ARRAY['mañana', 'energía', 'luz-solar', 'rutina']),
+
+    -- 8. HRV optimization
+    ('b0000000-0000-0000-0000-000000000008',
+     'a0000000-0000-0000-0000-000000000002',
+     (SELECT id FROM goals WHERE name = 'cardiovascular_health'),
+     'Optimización de HRV',
+     'Protocolo enfocado en mejorar la variabilidad de frecuencia cardíaca (HRV) mediante cardio zona 2, respiración box breathing y omega-3. Requiere tracking diario de HRV.',
+     60, 'recruiting', 'public',
+     ARRAY['hrv', 'cardio', 'zona-2', 'omega-3']),
+
+    -- 9. Digital detox sleep
+    ('b0000000-0000-0000-0000-000000000009',
+     'a0000000-0000-0000-0000-000000000001',
+     (SELECT id FROM goals WHERE name = 'reduce_sleep_latency'),
+     'Detox digital para dormir mejor',
+     'Desafío de 7 días sin pantallas 2 horas antes de dormir. Incluye lectura, journaling nocturno y ambiente de blackout total.',
+     7, 'draft', 'public',
+     ARRAY['sueño', 'pantallas', 'detox-digital', 'latencia']),
+
+    -- 10. Meditation + journaling
+    ('b0000000-0000-0000-0000-000000000010',
+     'a0000000-0000-0000-0000-000000000002',
+     (SELECT id FROM goals WHERE name = 'manage_stress'),
+     'Mindfulness diario: meditación + journal',
+     'Protocolo de 30 días combinando 15 minutos de meditación con journaling reflexivo y práctica de gratitud. Ideal para gestionar el estrés del día a día.',
+     30, 'active', 'public',
+     ARRAY['mindfulness', 'estrés', 'meditación', 'journaling'])
+ON CONFLICT DO NOTHING;
+
+
+-- ════════════════════════════════════════════════════════════
+-- 7. SEED PROTOCOL INTERVENTIONS
+-- ════════════════════════════════════════════════════════════
+
+INSERT INTO protocol_interventions (protocol_id, intervention_id, dosage, dosage_unit, frequency, timing, sort_order) VALUES
+    -- Sleep protocol: magnesium + melatonin + blue light block + fixed schedule
+    ('b0000000-0000-0000-0000-000000000001', (SELECT id FROM interventions WHERE name = 'magnesium'),           400,  'mg',      'diario', 'Antes de dormir', 1),
+    ('b0000000-0000-0000-0000-000000000001', (SELECT id FROM interventions WHERE name = 'melatonin'),           0.5,  'mg',      'diario', '30 min antes de acostarse', 2),
+    ('b0000000-0000-0000-0000-000000000001', (SELECT id FROM interventions WHERE name = 'blue_light_block'),    NULL, 'horas',   'diario', '2h antes de dormir', 3),
+    ('b0000000-0000-0000-0000-000000000001', (SELECT id FROM interventions WHERE name = 'fixed_sleep_schedule'),NULL, NULL,      'diario', 'Misma hora todos los días', 4),
+
+    -- Cognitive stack: caffeine + l-theanine + meditation + nasal breathing
+    ('b0000000-0000-0000-0000-000000000002', (SELECT id FROM interventions WHERE name = 'caffeine'),            100,  'mg',      'diario', 'Mañana con el primer café', 1),
+    ('b0000000-0000-0000-0000-000000000002', (SELECT id FROM interventions WHERE name = 'l_theanine'),          200,  'mg',      'diario', 'Junto con la cafeína', 2),
+    ('b0000000-0000-0000-0000-000000000002', (SELECT id FROM interventions WHERE name = 'meditation'),          15,   'minutos', 'diario', 'Al despertar', 3),
+    ('b0000000-0000-0000-0000-000000000002', (SELECT id FROM interventions WHERE name = 'nasal_breathing'),     NULL, 'minutos', 'diario', 'Durante sesiones de trabajo', 4),
+
+    -- Cold exposure: wim hof + cold exposure
+    ('b0000000-0000-0000-0000-000000000003', (SELECT id FROM interventions WHERE name = 'wim_hof'),             3,    'rondas',  'diario', 'Mañana en ayunas', 1),
+    ('b0000000-0000-0000-0000-000000000003', (SELECT id FROM interventions WHERE name = 'cold_exposure'),       3,    'minutos', 'diario', 'Después de respiración', 2),
+
+    -- Strength: creatine + strength training
+    ('b0000000-0000-0000-0000-000000000004', (SELECT id FROM interventions WHERE name = 'creatine'),            5,    'g',       'diario',    'Con comida post-entreno', 1),
+    ('b0000000-0000-0000-0000-000000000004', (SELECT id FROM interventions WHERE name = 'strength_training'),   60,   'minutos', '4x/semana', 'Bloques de 60 min', 2),
+
+    -- Anxiety: ashwagandha + meditation + journaling
+    ('b0000000-0000-0000-0000-000000000005', (SELECT id FROM interventions WHERE name = 'ashwagandha'),         600,  'mg',      'diario', 'Con el desayuno', 1),
+    ('b0000000-0000-0000-0000-000000000005', (SELECT id FROM interventions WHERE name = 'meditation'),          20,   'minutos', 'diario', 'Mañana o noche', 2),
+    ('b0000000-0000-0000-0000-000000000005', (SELECT id FROM interventions WHERE name = 'journaling'),          10,   'minutos', 'diario', 'Antes de dormir', 3),
+
+    -- Fasting: intermittent fasting + eating window
+    ('b0000000-0000-0000-0000-000000000006', (SELECT id FROM interventions WHERE name = 'intermittent_fasting'),16,   'horas',   'diario', 'Ayuno de 22:00 a 14:00', 1),
+    ('b0000000-0000-0000-0000-000000000006', (SELECT id FROM interventions WHERE name = 'eating_window'),       8,    'horas',   'diario', 'Comer entre 14:00 y 22:00', 2),
+
+    -- Morning routine: morning sunlight + daily walk + box breathing
+    ('b0000000-0000-0000-0000-000000000007', (SELECT id FROM interventions WHERE name = 'morning_sunlight'),    30,   'minutos', 'diario', 'Primeros 30 min del día', 1),
+    ('b0000000-0000-0000-0000-000000000007', (SELECT id FROM interventions WHERE name = 'daily_walk'),          15,   'minutos', 'diario', 'Caminata matutina', 2),
+    ('b0000000-0000-0000-0000-000000000007', (SELECT id FROM interventions WHERE name = 'box_breathing'),       5,    'minutos', 'diario', 'Post-caminata', 3),
+
+    -- HRV: zone2 cardio + box breathing + omega-3
+    ('b0000000-0000-0000-0000-000000000008', (SELECT id FROM interventions WHERE name = 'zone2_cardio'),        45,   'minutos', '3x/semana', 'FC entre 120-150 bpm', 1),
+    ('b0000000-0000-0000-0000-000000000008', (SELECT id FROM interventions WHERE name = 'box_breathing'),       10,   'minutos', 'diario',    'Mañana y noche', 2),
+    ('b0000000-0000-0000-0000-000000000008', (SELECT id FROM interventions WHERE name = 'omega3'),              2000, 'mg',      'diario',    'Con comida principal', 3),
+
+    -- Digital detox: no screens + journaling + total blackout
+    ('b0000000-0000-0000-0000-000000000009', (SELECT id FROM interventions WHERE name = 'no_screens_before_bed'),120, 'minutos', 'diario', '2h antes de dormir', 1),
+    ('b0000000-0000-0000-0000-000000000009', (SELECT id FROM interventions WHERE name = 'journaling'),          10,   'minutos', 'diario', 'Reemplazo de pantallas', 2),
+    ('b0000000-0000-0000-0000-000000000009', (SELECT id FROM interventions WHERE name = 'total_blackout'),      NULL, NULL,      'diario', 'Oscuridad total', 3),
+
+    -- Mindfulness: meditation + journaling + daily gratitude
+    ('b0000000-0000-0000-0000-000000000010', (SELECT id FROM interventions WHERE name = 'meditation'),          15,   'minutos', 'diario', 'Mañana', 1),
+    ('b0000000-0000-0000-0000-000000000010', (SELECT id FROM interventions WHERE name = 'journaling'),          15,   'minutos', 'diario', 'Noche', 2),
+    ('b0000000-0000-0000-0000-000000000010', (SELECT id FROM interventions WHERE name = 'daily_gratitude'),     3,    'items',   'diario', 'Con el journaling', 3)
+ON CONFLICT DO NOTHING;
+
+
+-- ════════════════════════════════════════════════════════════
+-- 8. SEED PROTOCOL METRICS
+-- ════════════════════════════════════════════════════════════
+
+INSERT INTO protocol_metrics (protocol_id, metric_id, log_frequency, sort_order) VALUES
+    -- Sleep protocol
+    ('b0000000-0000-0000-0000-000000000001', (SELECT id FROM metrics WHERE name = 'sleep_hours'),      'daily', 1),
+    ('b0000000-0000-0000-0000-000000000001', (SELECT id FROM metrics WHERE name = 'sleep_quality'),    'daily', 2),
+    ('b0000000-0000-0000-0000-000000000001', (SELECT id FROM metrics WHERE name = 'sleep_latency'),    'daily', 3),
+    ('b0000000-0000-0000-0000-000000000001', (SELECT id FROM metrics WHERE name = 'deep_sleep'),       'daily', 4),
+
+    -- Cognitive stack
+    ('b0000000-0000-0000-0000-000000000002', (SELECT id FROM metrics WHERE name = 'perceived_focus'),        'daily', 1),
+    ('b0000000-0000-0000-0000-000000000002', (SELECT id FROM metrics WHERE name = 'mental_clarity'),         'daily', 2),
+    ('b0000000-0000-0000-0000-000000000002', (SELECT id FROM metrics WHERE name = 'perceived_productivity'), 'daily', 3),
+
+    -- Cold exposure
+    ('b0000000-0000-0000-0000-000000000003', (SELECT id FROM metrics WHERE name = 'energy_level'),     'daily', 1),
+    ('b0000000-0000-0000-0000-000000000003', (SELECT id FROM metrics WHERE name = 'general_mood'),     'daily', 2),
+    ('b0000000-0000-0000-0000-000000000003', (SELECT id FROM metrics WHERE name = 'perceived_pain'),   'daily', 3),
+
+    -- Strength
+    ('b0000000-0000-0000-0000-000000000004', (SELECT id FROM metrics WHERE name = 'estimated_1rm'),    'weekly', 1),
+    ('b0000000-0000-0000-0000-000000000004', (SELECT id FROM metrics WHERE name = 'body_weight'),      'weekly', 2),
+    ('b0000000-0000-0000-0000-000000000004', (SELECT id FROM metrics WHERE name = 'reps_completed'),   'daily',  3),
+
+    -- Anxiety
+    ('b0000000-0000-0000-0000-000000000005', (SELECT id FROM metrics WHERE name = 'anxiety_level'),    'daily', 1),
+    ('b0000000-0000-0000-0000-000000000005', (SELECT id FROM metrics WHERE name = 'stress_level'),     'daily', 2),
+    ('b0000000-0000-0000-0000-000000000005', (SELECT id FROM metrics WHERE name = 'general_mood'),     'daily', 3),
+
+    -- Fasting
+    ('b0000000-0000-0000-0000-000000000006', (SELECT id FROM metrics WHERE name = 'body_weight'),      'daily', 1),
+    ('b0000000-0000-0000-0000-000000000006', (SELECT id FROM metrics WHERE name = 'body_fat'),         'weekly', 2),
+    ('b0000000-0000-0000-0000-000000000006', (SELECT id FROM metrics WHERE name = 'energy_level'),     'daily', 3),
+
+    -- Morning routine
+    ('b0000000-0000-0000-0000-000000000007', (SELECT id FROM metrics WHERE name = 'energy_level'),     'daily', 1),
+    ('b0000000-0000-0000-0000-000000000007', (SELECT id FROM metrics WHERE name = 'general_mood'),     'daily', 2),
+
+    -- HRV
+    ('b0000000-0000-0000-0000-000000000008', (SELECT id FROM metrics WHERE name = 'hrv'),              'daily', 1),
+    ('b0000000-0000-0000-0000-000000000008', (SELECT id FROM metrics WHERE name = 'resting_heart_rate'),'daily', 2),
+    ('b0000000-0000-0000-0000-000000000008', (SELECT id FROM metrics WHERE name = 'estimated_vo2max'), 'weekly', 3),
+
+    -- Digital detox
+    ('b0000000-0000-0000-0000-000000000009', (SELECT id FROM metrics WHERE name = 'sleep_latency'),    'daily', 1),
+    ('b0000000-0000-0000-0000-000000000009', (SELECT id FROM metrics WHERE name = 'sleep_quality'),    'daily', 2),
+
+    -- Mindfulness
+    ('b0000000-0000-0000-0000-000000000010', (SELECT id FROM metrics WHERE name = 'stress_level'),     'daily', 1),
+    ('b0000000-0000-0000-0000-000000000010', (SELECT id FROM metrics WHERE name = 'general_mood'),     'daily', 2),
+    ('b0000000-0000-0000-0000-000000000010', (SELECT id FROM metrics WHERE name = 'anxiety_level'),    'daily', 3)
+ON CONFLICT DO NOTHING;
+
+
+-- ════════════════════════════════════════════════════════════
+-- 9. SEED ENROLLMENTS (for popularity)
+-- ════════════════════════════════════════════════════════════
+
+INSERT INTO protocol_enrollments (protocol_id, user_id, status) VALUES
+    -- Sleep protocol (3 enrollments)
+    ('b0000000-0000-0000-0000-000000000001', 'a0000000-0000-0000-0000-000000000003', 'active'),
+    ('b0000000-0000-0000-0000-000000000001', 'a0000000-0000-0000-0000-000000000004', 'completed'),
+    ('b0000000-0000-0000-0000-000000000001', 'a0000000-0000-0000-0000-000000000005', 'active'),
+
+    -- Cognitive stack (2 enrollments)
+    ('b0000000-0000-0000-0000-000000000002', 'a0000000-0000-0000-0000-000000000003', 'active'),
+    ('b0000000-0000-0000-0000-000000000002', 'a0000000-0000-0000-0000-000000000004', 'active'),
+
+    -- Strength (4 enrollments — most popular)
+    ('b0000000-0000-0000-0000-000000000004', 'a0000000-0000-0000-0000-000000000003', 'active'),
+    ('b0000000-0000-0000-0000-000000000004', 'a0000000-0000-0000-0000-000000000004', 'active'),
+    ('b0000000-0000-0000-0000-000000000004', 'a0000000-0000-0000-0000-000000000005', 'completed'),
+    ('b0000000-0000-0000-0000-000000000004', 'a0000000-0000-0000-0000-000000000001', 'active'),
+
+    -- Anxiety (2 enrollments, completed)
+    ('b0000000-0000-0000-0000-000000000005', 'a0000000-0000-0000-0000-000000000003', 'completed'),
+    ('b0000000-0000-0000-0000-000000000005', 'a0000000-0000-0000-0000-000000000005', 'completed'),
+
+    -- Fasting (1 enrollment)
+    ('b0000000-0000-0000-0000-000000000006', 'a0000000-0000-0000-0000-000000000004', 'active'),
+
+    -- Morning routine (3 enrollments)
+    ('b0000000-0000-0000-0000-000000000007', 'a0000000-0000-0000-0000-000000000003', 'active'),
+    ('b0000000-0000-0000-0000-000000000007', 'a0000000-0000-0000-0000-000000000004', 'active'),
+    ('b0000000-0000-0000-0000-000000000007', 'a0000000-0000-0000-0000-000000000005', 'active'),
+
+    -- Mindfulness (2 enrollments)
+    ('b0000000-0000-0000-0000-000000000010', 'a0000000-0000-0000-0000-000000000003', 'active'),
+    ('b0000000-0000-0000-0000-000000000010', 'a0000000-0000-0000-0000-000000000004', 'active')
+ON CONFLICT DO NOTHING;
+
+
+-- ════════════════════════════════════════════════════════════
+-- 10. SEED REVIEWS (for rating)
+-- ════════════════════════════════════════════════════════════
+
+INSERT INTO protocol_reviews (protocol_id, user_id, rating, title, body) VALUES
+    -- Sleep protocol: avg 4.33
+    ('b0000000-0000-0000-0000-000000000001', 'a0000000-0000-0000-0000-000000000003', 5, 'Excelente protocolo', 'Mejoré mi sueño notablemente en 2 semanas.'),
+    ('b0000000-0000-0000-0000-000000000001', 'a0000000-0000-0000-0000-000000000004', 4, 'Muy bueno', 'El magnesio ayudó muchísimo, la melatonina no tanto.'),
+    ('b0000000-0000-0000-0000-000000000001', 'a0000000-0000-0000-0000-000000000005', 4, 'Recomendado', 'Consistente y fácil de seguir.'),
+
+    -- Cognitive stack: avg 4.5
+    ('b0000000-0000-0000-0000-000000000002', 'a0000000-0000-0000-0000-000000000003', 5, 'Game changer', 'La combo cafeína+teanina es increíble para el focus.'),
+    ('b0000000-0000-0000-0000-000000000002', 'a0000000-0000-0000-0000-000000000004', 4, 'Muy efectivo', 'Noté mejoras a partir del día 5.'),
+
+    -- Strength: avg 4.67
+    ('b0000000-0000-0000-0000-000000000004', 'a0000000-0000-0000-0000-000000000003', 5, 'Resultados reales', 'Gané 3kg de masa magra en 8 semanas.'),
+    ('b0000000-0000-0000-0000-000000000004', 'a0000000-0000-0000-0000-000000000004', 5, 'Excelente estructura', 'Bien pensado y progresivo.'),
+    ('b0000000-0000-0000-0000-000000000004', 'a0000000-0000-0000-0000-000000000005', 4, 'Sólido', 'Buena base, agregaría más variación.'),
+
+    -- Anxiety: avg 3.5
+    ('b0000000-0000-0000-0000-000000000005', 'a0000000-0000-0000-0000-000000000003', 3, 'Decente', 'Ayudó algo pero esperaba más.'),
+    ('b0000000-0000-0000-0000-000000000005', 'a0000000-0000-0000-0000-000000000005', 4, 'Funcionó para mí', 'El journaling fue clave.'),
+
+    -- Morning routine: avg 5.0
+    ('b0000000-0000-0000-0000-000000000007', 'a0000000-0000-0000-0000-000000000003', 5, 'Perfecto', 'Simple y efectivo, lo sigo haciendo.'),
+    ('b0000000-0000-0000-0000-000000000007', 'a0000000-0000-0000-0000-000000000004', 5, 'Lo mejor que probé', 'Cambió mi mañana completamente.'),
+
+    -- Mindfulness: avg 4.0
+    ('b0000000-0000-0000-0000-000000000010', 'a0000000-0000-0000-0000-000000000003', 4, 'Buena rutina', 'Meditación + journal es una gran combo.'),
+    ('b0000000-0000-0000-0000-000000000010', 'a0000000-0000-0000-0000-000000000004', 4, 'Consistente', 'Fácil de mantener y notar cambios.')
+ON CONFLICT DO NOTHING;
+
+
+-- ════════════════════════════════════════════════════════════
+-- 11. SEED FAVORITES (for popularity score)
+-- ════════════════════════════════════════════════════════════
+
+INSERT INTO protocol_favorites (user_id, protocol_id) VALUES
+    ('a0000000-0000-0000-0000-000000000003', 'b0000000-0000-0000-0000-000000000001'),
+    ('a0000000-0000-0000-0000-000000000004', 'b0000000-0000-0000-0000-000000000001'),
+    ('a0000000-0000-0000-0000-000000000005', 'b0000000-0000-0000-0000-000000000002'),
+    ('a0000000-0000-0000-0000-000000000003', 'b0000000-0000-0000-0000-000000000004'),
+    ('a0000000-0000-0000-0000-000000000004', 'b0000000-0000-0000-0000-000000000004'),
+    ('a0000000-0000-0000-0000-000000000005', 'b0000000-0000-0000-0000-000000000004'),
+    ('a0000000-0000-0000-0000-000000000003', 'b0000000-0000-0000-0000-000000000007'),
+    ('a0000000-0000-0000-0000-000000000004', 'b0000000-0000-0000-0000-000000000007')
+ON CONFLICT DO NOTHING;
+
+
+-- ════════════════════════════════════════════════════════════
+-- 12. POPULATE search_vector FOR FULL-TEXT SEARCH
+-- ════════════════════════════════════════════════════════════
+
+UPDATE protocols SET search_vector =
+    setweight(to_tsvector('spanish', COALESCE(title, '')), 'A') ||
+    setweight(to_tsvector('spanish', COALESCE(description, '')), 'B') ||
+    setweight(to_tsvector('spanish', COALESCE(array_to_string(tags, ' '), '')), 'C')
+WHERE search_vector IS NULL;
