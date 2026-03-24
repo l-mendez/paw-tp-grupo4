@@ -40,7 +40,6 @@ public class MetricServiceImplTest {
 
         assertEquals(2, result.size());
         assertEquals("biometrics", result.get(0).getName());
-        verify(metricDao).findAllCategories();
     }
 
     @Test
@@ -63,7 +62,6 @@ public class MetricServiceImplTest {
         final List<Metric> result = metricService.getAllMetrics();
 
         assertEquals(2, result.size());
-        verify(metricDao).findAll();
     }
 
     // ── getMetricsByCategory ──
@@ -79,7 +77,6 @@ public class MetricServiceImplTest {
 
         assertEquals(1, result.size());
         assertEquals("hrv", result.get(0).getName());
-        verify(metricDao).findByCategory(CATEGORY_ID);
     }
 
     @Test

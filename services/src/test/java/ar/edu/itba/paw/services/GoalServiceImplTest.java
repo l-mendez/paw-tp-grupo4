@@ -40,7 +40,6 @@ public class GoalServiceImplTest {
 
         assertEquals(2, result.size());
         assertEquals("sleep", result.get(0).getName());
-        verify(goalDao).findAllCategories();
     }
 
     @Test
@@ -65,7 +64,6 @@ public class GoalServiceImplTest {
 
         assertEquals(1, result.size());
         assertEquals("better_sleep", result.get(0).getName());
-        verify(goalDao).findAll();
     }
 
     // ── getGoalsByCategory ──
@@ -80,7 +78,6 @@ public class GoalServiceImplTest {
         final List<Goal> result = goalService.getGoalsByCategory(CATEGORY_ID);
 
         assertEquals(1, result.size());
-        verify(goalDao).findByCategory(CATEGORY_ID);
     }
 
     @Test

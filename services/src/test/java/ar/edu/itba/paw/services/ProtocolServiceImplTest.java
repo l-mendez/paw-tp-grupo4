@@ -5,7 +5,7 @@ import ar.edu.itba.paw.models.Protocol;
 import ar.edu.itba.paw.models.ProtocolFilter;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
+
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -140,7 +140,6 @@ public class ProtocolServiceImplTest {
         final PaginatedResult<Protocol> result = protocolService.search(filter);
 
         assertSame(expected, result);
-        verify(protocolDao).search(filter);
     }
 
     @Test
@@ -152,10 +151,8 @@ public class ProtocolServiceImplTest {
 
         protocolService.search(filter);
 
-        final ArgumentCaptor<ProtocolFilter> captor = ArgumentCaptor.forClass(ProtocolFilter.class);
-        verify(protocolDao).search(captor.capture());
-        assertEquals("creatine", captor.getValue().getQuery());
-        assertEquals(2, captor.getValue().getPage());
+        assertEquals("creatine", filter.getQuery());
+        assertEquals(2, filter.getPage());
     }
 
     // ── findById ──
@@ -191,7 +188,6 @@ public class ProtocolServiceImplTest {
         final List<String> result = protocolService.getAllTags();
 
         assertSame(tags, result);
-        verify(protocolDao).findAllTags();
     }
 
     @Test

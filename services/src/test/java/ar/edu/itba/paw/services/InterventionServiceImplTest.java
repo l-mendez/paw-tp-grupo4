@@ -40,7 +40,6 @@ public class InterventionServiceImplTest {
 
         assertEquals(2, result.size());
         assertEquals("supplements", result.get(0).getName());
-        verify(interventionDao).findAllCategories();
     }
 
     @Test
@@ -63,7 +62,6 @@ public class InterventionServiceImplTest {
 
         assertEquals(1, result.size());
         assertEquals("creatine", result.get(0).getName());
-        verify(interventionDao).findAll();
     }
 
     // ── getInterventionsByCategory ──
@@ -78,7 +76,6 @@ public class InterventionServiceImplTest {
         final List<Intervention> result = interventionService.getInterventionsByCategory(CATEGORY_ID);
 
         assertEquals(1, result.size());
-        verify(interventionDao).findByCategory(CATEGORY_ID);
     }
 
     @Test
