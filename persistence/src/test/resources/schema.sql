@@ -89,6 +89,28 @@ CREATE TABLE protocol_interventions (
     UNIQUE(protocol_id, intervention_id)
 );
 
+CREATE TABLE protocol_enrollments (
+    id              UUID PRIMARY KEY,
+    protocol_id     UUID NOT NULL REFERENCES protocols(id),
+    user_id         UUID NOT NULL REFERENCES users(id),
+    status          VARCHAR(50) DEFAULT 'enrolled' NOT NULL,
+    enrollment_type VARCHAR(50) DEFAULT 'cohort' NOT NULL,
+    is_public       BOOLEAN DEFAULT TRUE NOT NULL,
+    started_at      TIMESTAMP,
+    completed_at    TIMESTAMP,
+    created_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    UNIQUE(protocol_id, user_id)
+);
+
+CREATE TABLE protocol_favorites (
+    id              UUID PRIMARY KEY,
+    user_id         UUID NOT NULL REFERENCES users(id),
+    protocol_id     UUID NOT NULL REFERENCES protocols(id),
+    created_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    UNIQUE(user_id, protocol_id)
+);
+
 CREATE TABLE protocol_reviews (
     id              UUID PRIMARY KEY,
     protocol_id     UUID NOT NULL REFERENCES protocols(id),

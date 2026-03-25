@@ -56,10 +56,18 @@
     </div>
 
     <%-- Action buttons --%>
-    <div class="protocol-detail-actions">
-        <paw:button text="Anotarse" variant="primary" />
-        <paw:button text="Guardar" variant="outline" />
-    </div>
+    <c:if test="${currentUser != null}">
+        <div class="protocol-detail-actions">
+            <form action="<c:url value='/protocols/${protocol.id}/enroll' />" method="post">
+                <paw:button text="${isEnrolled ? 'Abandonar' : 'Anotarse'}"
+                            variant="${isEnrolled ? 'outline' : 'primary'}" type="submit" />
+            </form>
+            <form action="<c:url value='/protocols/${protocol.id}/favorite' />" method="post">
+                <paw:button text="${isFavorited ? 'Guardado' : 'Guardar'}"
+                            variant="${isFavorited ? 'outline' : 'primary'}" type="submit" />
+            </form>
+        </div>
+    </c:if>
 
     <%-- Stats --%>
     <div class="protocol-detail-stats">

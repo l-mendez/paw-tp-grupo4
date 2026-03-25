@@ -23,18 +23,24 @@ public class ProtocolController {
     private final MetricService metricService;
     private final InterventionService interventionService;
     private final ReviewService reviewService;
+    private final EnrollmentService enrollmentService;
+    private final FavoriteService favoriteService;
 
     @Autowired
     public ProtocolController(final ProtocolService protocolService,
                               final GoalService goalService,
                               final MetricService metricService,
                               final InterventionService interventionService,
-                              final ReviewService reviewService) {
+                              final ReviewService reviewService,
+                              final EnrollmentService enrollmentService,
+                              final FavoriteService favoriteService) {
         this.protocolService = protocolService;
         this.goalService = goalService;
         this.metricService = metricService;
         this.interventionService = interventionService;
         this.reviewService = reviewService;
+        this.enrollmentService = enrollmentService;
+        this.favoriteService = favoriteService;
     }
 
     @RequestMapping(value = "/protocols", method = RequestMethod.GET)
@@ -149,6 +155,8 @@ public class ProtocolController {
             final java.util.Optional<Review> userReview =
                     reviewService.getUserReview(protocolId, currentUser.getId());
             mav.addObject("userReview", userReview.orElse(null));
+            mav.addObject("isEnrolled", enrollmentService.isEnrolled(protocolId, currentUser.getId()));
+            mav.addObject("isFavorited", favoriteService.isFavorited(protocolId, currentUser.getId()));
         }
 
         return mav;
@@ -190,6 +198,38 @@ public class ProtocolController {
         }
 
         reviewService.delete(protocolId, currentUser.getId());
+        return new ModelAndView("redirect:/protocols/" + id);
+    }
+
+    @RequestMapping(value = "/protocols/{id}/enroll", method = RequestMethod.POST)
+    public ModelAndView toggleEnrollment(@PathVariable("id") final String id, final HttpSession session) {
+        final User currentUser = (User) session.getAttribute("currentUser");
+        if (currentUser == null) {
+            return new ModelAndView("redirect:/login");
+        }
+        final UUID protocolId;
+        try {
+            protocolId = UUID.fromString(id);
+        } catch (IllegalArgumentException e) {
+            return new ModelAndView("404");
+        }
+        enrollmentService.toggle(protocolId, currentUser.getId());
+        return new ModelAndView("redirect:/protocols/" + id);
+    }
+
+    @RequestMapping(value = "/protocols/{id}/favorite", method = RequestMethod.POST)
+    public ModelAndView toggleFavorite(@PathVariable("id") final String id, final HttpSession session) {
+        final User currentUser = (User) session.getAttribute("currentUser");
+        if (currentUser == null) {
+            return new ModelAndView("redirect:/login");
+        }
+        final UUID protocolId;
+        try {
+            protocolId = UUID.fromString(id);
+        } catch (IllegalArgumentException e) {
+            return new ModelAndView("404");
+        }
+        favoriteService.toggle(protocolId, currentUser.getId());
         return new ModelAndView("redirect:/protocols/" + id);
     }
 
