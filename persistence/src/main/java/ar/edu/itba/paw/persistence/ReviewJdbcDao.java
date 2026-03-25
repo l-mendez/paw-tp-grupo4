@@ -33,7 +33,8 @@ public class ReviewJdbcDao implements ReviewDao {
     public ReviewJdbcDao(final DataSource ds) {
         this.jdbcTemplate = new JdbcTemplate(ds);
         this.jdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
-                .withTableName("protocol_reviews");
+                .withTableName("protocol_reviews")
+                .usingColumns("id", "protocol_id", "user_id", "rating", "body");
     }
 
     @Override
