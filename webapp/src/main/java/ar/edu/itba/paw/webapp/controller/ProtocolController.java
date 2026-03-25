@@ -4,6 +4,7 @@ import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -110,6 +111,30 @@ public class ProtocolController {
         mav.addObject("allTags", allTags);
         mav.addObject("currentSort", sort);
 
+        return mav;
+    }
+
+    @RequestMapping(value = "/protocols/{id}", method = RequestMethod.GET)
+    public ModelAndView detail(@PathVariable("id") final String id) {
+        final UUID protocolId;
+        try {
+            protocolId = UUID.fromString(id);
+        } catch (IllegalArgumentException e) {
+            return new ModelAndView("404");
+        }
+
+        final java.util.Optional<Protocol> maybeProtocol = protocolService.findById(protocolId);
+        if (maybeProtocol.isEmpty()) {
+            return new ModelAndView("404");
+        }
+
+        final Protocol protocol = maybeProtocol.get();
+        final java.util.List<ProtocolIntervention> interventions =
+                interventionService.getInterventionsByProtocol(protocolId);
+
+        final ModelAndView mav = new ModelAndView("protocols/detail");
+        mav.addObject("protocol", protocol);
+        mav.addObject("interventions", interventions);
         return mav;
     }
 

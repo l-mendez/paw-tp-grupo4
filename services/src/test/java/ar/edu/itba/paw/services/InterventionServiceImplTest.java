@@ -2,6 +2,7 @@ package ar.edu.itba.paw.services;
 
 import ar.edu.itba.paw.models.Intervention;
 import ar.edu.itba.paw.models.InterventionCategory;
+import ar.edu.itba.paw.models.ProtocolIntervention;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -84,5 +85,31 @@ public class InterventionServiceImplTest {
         when(interventionDao.findByCategory(unknownCategory)).thenReturn(Collections.emptyList());
 
         assertTrue(interventionService.getInterventionsByCategory(unknownCategory).isEmpty());
+    }
+
+    // ── getInterventionsByProtocol ──
+
+    @Test
+    public void getInterventionsByProtocol_returnsList() {
+        final UUID protocolId = UUID.randomUUID();
+        final List<ProtocolIntervention> expected = List.of(
+                new ProtocolIntervention(UUID.randomUUID(), protocolId, CATEGORY_ID,
+                        "creatine", "Creatina", new java.math.BigDecimal("5"), "g",
+                        "diario", "manana", "Tomar con agua", 1, true)
+        );
+        when(interventionDao.findByProtocol(protocolId)).thenReturn(expected);
+
+        final List<ProtocolIntervention> result = interventionService.getInterventionsByProtocol(protocolId);
+
+        assertEquals(1, result.size());
+        assertEquals("creatine", result.get(0).getInterventionName());
+    }
+
+    @Test
+    public void getInterventionsByProtocol_noResults_returnsEmptyList() {
+        final UUID protocolId = UUID.randomUUID();
+        when(interventionDao.findByProtocol(protocolId)).thenReturn(Collections.emptyList());
+
+        assertTrue(interventionService.getInterventionsByProtocol(protocolId).isEmpty());
     }
 }

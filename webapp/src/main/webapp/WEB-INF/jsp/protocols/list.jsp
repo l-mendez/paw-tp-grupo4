@@ -169,6 +169,7 @@
                     <div class="protocols-grid">
                         <c:forEach var="protocol" items="${protocols}">
                             <paw:protocol-card
+                                protocolId="${protocol.id}"
                                 title="${protocol.title}"
                                 description="${protocol.description}"
                                 status="${protocol.status}"

@@ -1,4 +1,5 @@
 <%@ tag language="java" pageEncoding="UTF-8" %>
+<%@ attribute name="protocolId" required="true" %>
 <%@ attribute name="title" required="true" %>
 <%@ attribute name="description" required="false" %>
 <%@ attribute name="status" required="true" %>
@@ -23,7 +24,7 @@
     <c:otherwise><c:set var="statusLabel" value="${status}" /></c:otherwise>
 </c:choose>
 
-<div class="protocol-card-link ${extraClass}">
+<a href="<c:url value='/protocols/${protocolId}' />" class="protocol-card-link ${extraClass}">
     <div class="card">
         <div class="card-body">
             <div class="protocol-card-header">
@@ -70,4 +71,4 @@
             </div>
         </div>
     </div>
-</div>
+</a>

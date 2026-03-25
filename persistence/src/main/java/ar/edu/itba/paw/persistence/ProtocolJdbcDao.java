@@ -76,7 +76,7 @@ public class ProtocolJdbcDao implements ProtocolDao {
         sql.append("p.min_participants, p.max_participants, p.tags, p.fork_count, p.forked_from, ");
         sql.append("p.created_at, p.updated_at, ");
         sql.append("u.username AS creator_username, u.display_name AS creator_display_name, ");
-        sql.append("g.label AS goal_label, gc.name AS goal_category_name, gc.icon AS goal_category_icon, ");
+        sql.append("g.label AS goal_label, gc.label AS goal_category_name, gc.icon AS goal_category_icon, ");
         sql.append("COALESCE(r.avg_rating, 0) AS avg_rating, COALESCE(r.review_count, 0) AS review_count, ");
         sql.append("COALESCE(e.enrollment_count, 0) AS enrollment_count, ");
         sql.append("COALESCE(f.favorite_count, 0) AS favorite_count, ");
@@ -217,7 +217,7 @@ public class ProtocolJdbcDao implements ProtocolDao {
                 "p.min_participants, p.max_participants, p.tags, p.fork_count, p.forked_from, " +
                 "p.created_at, p.updated_at, " +
                 "u.username AS creator_username, u.display_name AS creator_display_name, " +
-                "g.label AS goal_label, gc.name AS goal_category_name, gc.icon AS goal_category_icon, " +
+                "g.label AS goal_label, gc.label AS goal_category_name, gc.icon AS goal_category_icon, " +
                 "COALESCE(r.avg_rating, 0) AS avg_rating, COALESCE(r.review_count, 0) AS review_count, " +
                 "COALESCE(e.enrollment_count, 0) AS enrollment_count, " +
                 "COALESCE(f.favorite_count, 0) AS favorite_count " +

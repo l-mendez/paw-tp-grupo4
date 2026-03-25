@@ -2,6 +2,7 @@ package ar.edu.itba.paw.services;
 
 import ar.edu.itba.paw.models.Intervention;
 import ar.edu.itba.paw.models.InterventionCategory;
+import ar.edu.itba.paw.models.ProtocolIntervention;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,5 +34,10 @@ public class InterventionServiceImpl implements InterventionService {
     @Override
     public List<Intervention> getInterventionsByCategory(final UUID categoryId) {
         return interventionDao.findByCategory(categoryId);
+    }
+
+    @Override
+    public List<ProtocolIntervention> getInterventionsByProtocol(final UUID protocolId) {
+        return interventionDao.findByProtocol(protocolId);
     }
 }

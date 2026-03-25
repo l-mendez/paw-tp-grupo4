@@ -24,6 +24,20 @@ INSERT INTO interventions (id, category_id, name, label, description) VALUES
     ('00000000-0000-0000-0004-000000000002', '00000000-0000-0000-0003-000000000001', 'magnesium', 'Magnesio', 'Magnesio glicinato'),
     ('00000000-0000-0000-0004-000000000003', '00000000-0000-0000-0003-000000000002', 'strength_training', 'Entrenamiento de fuerza', 'Pesas');
 
+-- Users
+INSERT INTO users (id, email, password_hash, display_name, username) VALUES
+    ('00000000-0000-0000-0007-000000000001', 'test@example.com', '$2a$10$placeholder', 'Test User', 'testuser');
+
+-- Protocols
+INSERT INTO protocols (id, creator_id, goal_id, title, status, visibility) VALUES
+    ('00000000-0000-0000-0008-000000000001', '00000000-0000-0000-0007-000000000001', '00000000-0000-0000-0002-000000000001', 'Test Protocol', 'active', 'public');
+
+-- Protocol interventions (2 active, 1 inactive)
+INSERT INTO protocol_interventions (id, protocol_id, intervention_id, dosage, dosage_unit, frequency, timing, instructions, sort_order, is_active) VALUES
+    ('00000000-0000-0000-0009-000000000001', '00000000-0000-0000-0008-000000000001', '00000000-0000-0000-0004-000000000001', 5, 'g', 'diario', 'manana', 'Tomar con agua', 1, TRUE),
+    ('00000000-0000-0000-0009-000000000002', '00000000-0000-0000-0008-000000000001', '00000000-0000-0000-0004-000000000002', 400, 'mg', 'diario', 'noche', 'Antes de dormir', 2, TRUE),
+    ('00000000-0000-0000-0009-000000000003', '00000000-0000-0000-0008-000000000001', '00000000-0000-0000-0004-000000000003', NULL, NULL, '3x/semana', NULL, NULL, 3, FALSE);
+
 -- Metric categories
 INSERT INTO metric_categories (id, name, label, sort_order) VALUES
     ('00000000-0000-0000-0005-000000000001', 'biometrics', 'Biométricas', 1),

@@ -39,6 +39,56 @@ CREATE TABLE interventions (
     FOREIGN KEY (category_id) REFERENCES intervention_categories(id)
 );
 
+CREATE TABLE users (
+    id              UUID PRIMARY KEY,
+    email           VARCHAR(255) NOT NULL UNIQUE,
+    password_hash   VARCHAR(255) NOT NULL,
+    display_name    VARCHAR(200) NOT NULL,
+    username        VARCHAR(100) UNIQUE NOT NULL,
+    avatar_url      VARCHAR(512),
+    bio             VARCHAR(1000),
+    role            VARCHAR(50) DEFAULT 'explorer' NOT NULL,
+    is_verified     BOOLEAN DEFAULT FALSE NOT NULL,
+    created_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
+);
+
+CREATE TABLE protocols (
+    id              UUID PRIMARY KEY,
+    creator_id      UUID NOT NULL REFERENCES users(id),
+    goal_id         UUID NOT NULL REFERENCES goals(id),
+    community_id    UUID,
+    title           VARCHAR(255) NOT NULL,
+    description     VARCHAR(2000),
+    duration_days   INT,
+    is_template     BOOLEAN DEFAULT FALSE NOT NULL,
+    status          VARCHAR(50) DEFAULT 'draft' NOT NULL,
+    visibility      VARCHAR(50) DEFAULT 'private' NOT NULL,
+    min_participants INT,
+    max_participants INT,
+    fork_count      INT DEFAULT 0 NOT NULL,
+    forked_from     UUID,
+    created_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    deleted_at      TIMESTAMP
+);
+
+CREATE TABLE protocol_interventions (
+    id              UUID PRIMARY KEY,
+    protocol_id     UUID NOT NULL REFERENCES protocols(id),
+    intervention_id UUID NOT NULL REFERENCES interventions(id),
+    dosage          NUMERIC,
+    dosage_unit     VARCHAR(50),
+    frequency       VARCHAR(100) NOT NULL,
+    timing          VARCHAR(100),
+    instructions    VARCHAR(1000),
+    sort_order      INT DEFAULT 0 NOT NULL,
+    is_active       BOOLEAN DEFAULT TRUE NOT NULL,
+    created_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    UNIQUE(protocol_id, intervention_id)
+);
+
 CREATE TABLE metric_categories (
     id          UUID PRIMARY KEY,
     name        VARCHAR(100) NOT NULL UNIQUE,
