@@ -12,6 +12,7 @@ import org.springframework.web.servlet.ModelAndView;
 import java.util.List;
 import java.util.UUID;
 
+// TODO: add controller tests (MockMvc) for filter binding, sort, and pagination
 @Controller
 public class ProtocolController {
 
@@ -91,6 +92,8 @@ public class ProtocolController {
         final PaginatedResult<Protocol> result = protocolService.search(filter);
 
         final List<GoalCategory> goalCategories = goalService.getAllCategories();
+        // TODO: metricCategories and allMetrics are loaded but not yet used in the JSP.
+        //  Remove these queries or add a metric filter to the UI.
         final List<MetricCategory> metricCategories = metricService.getAllCategories();
         final List<Metric> allMetrics = metricService.getAllMetrics();
         final List<InterventionCategory> interventionCats = interventionService.getAllCategories();
