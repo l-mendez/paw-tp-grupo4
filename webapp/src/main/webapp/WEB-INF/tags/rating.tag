@@ -1,13 +1,15 @@
 <%@ tag language="java" pageEncoding="UTF-8" %>
 <%@ attribute name="value" required="true" type="java.lang.Double" %>
 <%@ attribute name="count" required="false" type="java.lang.Integer" %>
+<%@ attribute name="muted" required="false" type="java.lang.Boolean" %>
 <%@ attribute name="cssClass" required="false" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <c:set var="extraClass" value="${not empty cssClass ? cssClass : ''}" />
+<c:set var="mutedClass" value="${muted ? 'rating-muted' : ''}" />
 
-<span class="rating ${extraClass}">
+<span class="rating ${mutedClass} ${extraClass}">
     <c:forEach var="i" begin="1" end="5">
         <c:choose>
             <c:when test="${value >= i}">

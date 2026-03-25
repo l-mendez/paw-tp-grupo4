@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpSession;
 import java.util.List;
 import java.util.UUID;
 
@@ -21,16 +22,19 @@ public class ProtocolController {
     private final GoalService goalService;
     private final MetricService metricService;
     private final InterventionService interventionService;
+    private final ReviewService reviewService;
 
     @Autowired
     public ProtocolController(final ProtocolService protocolService,
                               final GoalService goalService,
                               final MetricService metricService,
-                              final InterventionService interventionService) {
+                              final InterventionService interventionService,
+                              final ReviewService reviewService) {
         this.protocolService = protocolService;
         this.goalService = goalService;
         this.metricService = metricService;
         this.interventionService = interventionService;
+        this.reviewService = reviewService;
     }
 
     @RequestMapping(value = "/protocols", method = RequestMethod.GET)
@@ -115,7 +119,7 @@ public class ProtocolController {
     }
 
     @RequestMapping(value = "/protocols/{id}", method = RequestMethod.GET)
-    public ModelAndView detail(@PathVariable("id") final String id) {
+    public ModelAndView detail(@PathVariable("id") final String id, final HttpSession session) {
         final UUID protocolId;
         try {
             protocolId = UUID.fromString(id);
@@ -131,11 +135,44 @@ public class ProtocolController {
         final Protocol protocol = maybeProtocol.get();
         final java.util.List<ProtocolIntervention> interventions =
                 interventionService.getInterventionsByProtocol(protocolId);
+        final java.util.List<Review> reviews = reviewService.getReviewsByProtocol(protocolId);
+
+        final User currentUser = (User) session.getAttribute("currentUser");
 
         final ModelAndView mav = new ModelAndView("protocols/detail");
         mav.addObject("protocol", protocol);
         mav.addObject("interventions", interventions);
+        mav.addObject("reviews", reviews);
+        mav.addObject("currentUser", currentUser);
+
+        if (currentUser != null) {
+            final java.util.Optional<Review> userReview =
+                    reviewService.getUserReview(protocolId, currentUser.getId());
+            mav.addObject("userReview", userReview.orElse(null));
+        }
+
         return mav;
+    }
+
+    @RequestMapping(value = "/protocols/{id}/reviews", method = RequestMethod.POST)
+    public ModelAndView submitReview(@PathVariable("id") final String id,
+                                    @RequestParam("rating") final int rating,
+                                    @RequestParam(value = "body", required = false) final String body,
+                                    final HttpSession session) {
+        final User currentUser = (User) session.getAttribute("currentUser");
+        if (currentUser == null) {
+            return new ModelAndView("redirect:/login");
+        }
+
+        final UUID protocolId;
+        try {
+            protocolId = UUID.fromString(id);
+        } catch (IllegalArgumentException e) {
+            return new ModelAndView("404");
+        }
+
+        reviewService.createOrUpdate(protocolId, currentUser.getId(), rating, body);
+        return new ModelAndView("redirect:/protocols/" + id);
     }
 
     private static java.util.Optional<UUID> parseUuid(final String value) {

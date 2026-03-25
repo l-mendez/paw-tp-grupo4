@@ -89,6 +89,18 @@ CREATE TABLE protocol_interventions (
     UNIQUE(protocol_id, intervention_id)
 );
 
+CREATE TABLE protocol_reviews (
+    id              UUID PRIMARY KEY,
+    protocol_id     UUID NOT NULL REFERENCES protocols(id),
+    user_id         UUID NOT NULL REFERENCES users(id),
+    rating          SMALLINT NOT NULL,
+    title           VARCHAR(255),
+    body            VARCHAR(2000),
+    created_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    UNIQUE(user_id, protocol_id)
+);
+
 CREATE TABLE metric_categories (
     id          UUID PRIMARY KEY,
     name        VARCHAR(100) NOT NULL UNIQUE,

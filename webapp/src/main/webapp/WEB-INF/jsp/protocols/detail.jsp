@@ -64,7 +64,8 @@
     <%-- Stats --%>
     <div class="protocol-detail-stats">
         <div class="protocol-detail-stat">
-            <paw:rating value="${protocol.avgRating}" count="${protocol.reviewCount}" />
+            <paw:rating value="${protocol.avgRating}" count="${protocol.reviewCount}"
+                        muted="${currentUser != null && userReview == null}" />
         </div>
         <div class="protocol-detail-stat">
             <span class="protocol-detail-stat-value">${protocol.enrollmentCount}</span>
@@ -135,6 +136,64 @@
          and distributions from metric_logs of completed enrollments for this protocol --%>
     <paw:card title="Resultados">
         <paw:text text="Próximamente: datos agregados de la comunidad." type="caption" />
+    </paw:card>
+
+    <%-- Reviews --%>
+    <paw:card title="Reviews">
+
+        <%-- Review form --%>
+        <c:choose>
+            <c:when test="${currentUser != null}">
+                <form action="<c:url value='/protocols/${protocol.id}/reviews' />" method="post"
+                      class="review-form">
+                    <c:if test="${userReview != null}">
+                        <paw:text text="Tu review" type="subtitle" />
+                    </c:if>
+                    <div class="review-star-selector">
+                        <span class="review-star-label">Puntaje:</span>
+                        <c:forEach var="i" begin="1" end="5">
+                            <label class="review-star-option">
+                                <input type="radio" name="rating" value="${i}"
+                                    ${userReview != null && userReview.rating == i ? 'checked' : ''}
+                                       required />
+                                <span class="review-star-icon">&#9733;</span>
+                            </label>
+                        </c:forEach>
+                    </div>
+                    <paw:input name="body" type="textarea"
+                               placeholder="Contá tu experiencia con este protocolo..."
+                               value="${userReview != null ? userReview.body : ''}" />
+                    <paw:button text="${userReview != null ? 'Actualizar review' : 'Enviar review'}"
+                                variant="primary" type="submit" />
+                </form>
+            </c:when>
+            <c:otherwise>
+                <p class="review-login-prompt">
+                    <a href="<c:url value='/login' />">Iniciá sesión</a> para dejar una review.
+                </p>
+            </c:otherwise>
+        </c:choose>
+
+        <%-- Reviews list --%>
+        <c:if test="${not empty reviews}">
+            <div class="review-list">
+                <c:forEach var="review" items="${reviews}">
+                    <div class="review-item ${currentUser != null && review.userId == currentUser.id ? 'review-item-own' : ''}">
+                        <div class="review-item-header">
+                            <strong><c:out value="${review.userDisplayName}" /></strong>
+                            <paw:rating value="${review.rating + 0.0}" />
+                        </div>
+                        <c:if test="${not empty review.body}">
+                            <p class="review-item-body"><c:out value="${review.body}" /></p>
+                        </c:if>
+                    </div>
+                </c:forEach>
+            </div>
+        </c:if>
+
+        <c:if test="${empty reviews && currentUser == null}">
+            <paw:text text="Este protocolo aún no tiene reviews." type="caption" />
+        </c:if>
     </paw:card>
 
 </div>

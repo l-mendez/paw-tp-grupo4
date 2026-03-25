@@ -454,6 +454,141 @@
     margin-bottom: 1.5rem;
 }
 
+/* -- Muted Rating (user hasn't reviewed) -- */
+.rating-muted .rating-star-filled,
+.rating-muted .rating-star-half {
+    color: var(--bs-gray-300);
+}
+
+/* -- Reviews -- */
+.review-form {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--bs-gray-100);
+}
+
+.review-star-selector {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    margin-bottom: 0.75rem;
+}
+
+.review-star-label {
+    font-size: var(--bs-font-size-sm);
+    font-weight: 500;
+    color: var(--bs-gray-600);
+    margin-right: 0.375rem;
+}
+
+.review-star-option {
+    cursor: pointer;
+    font-size: 1.5rem;
+    line-height: 1;
+}
+
+.review-star-option input[type="radio"] {
+    display: none;
+}
+
+.review-star-option .review-star-icon {
+    color: var(--bs-gray-300);
+    transition: color 0.1s;
+}
+
+.review-star-option input[type="radio"]:checked ~ .review-star-icon,
+.review-star-option:hover .review-star-icon,
+.review-star-option:hover ~ .review-star-option .review-star-icon {
+    color: var(--bs-accent);
+}
+
+/* Reverse sibling logic: highlight stars up to hovered/checked */
+.review-star-selector:hover .review-star-option .review-star-icon {
+    color: var(--bs-gray-300);
+}
+.review-star-selector:hover .review-star-option:hover .review-star-icon,
+.review-star-selector:hover .review-star-option:hover ~ .review-star-option .review-star-icon {
+    color: var(--bs-gray-300);
+}
+.review-star-selector .review-star-option:has(input:checked) .review-star-icon,
+.review-star-selector .review-star-option:has(input:checked) ~ .review-star-option .review-star-icon {
+    color: var(--bs-gray-300);
+}
+.review-star-selector .review-star-option:has(~ .review-star-option input:checked) .review-star-icon,
+.review-star-selector .review-star-option:has(input:checked) .review-star-icon {
+    color: var(--bs-accent);
+}
+
+.review-form .form-group {
+    margin-bottom: 0.75rem;
+}
+
+.review-form textarea {
+    min-height: 80px;
+    resize: vertical;
+}
+
+.review-login-prompt {
+    font-size: var(--bs-font-size-sm);
+    color: var(--bs-gray-500);
+    margin-bottom: 1.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--bs-gray-100);
+}
+
+.review-login-prompt a {
+    color: var(--bs-primary);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.review-login-prompt a:hover {
+    text-decoration: underline;
+}
+
+.review-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.review-item {
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--bs-gray-100);
+}
+
+.review-item:first-child {
+    padding-top: 0;
+}
+
+.review-item:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.review-item-own {
+    background: var(--bs-gray-50);
+    margin: 0 -1rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    border-radius: var(--bs-radius-md);
+}
+
+.review-item-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.375rem;
+    font-size: var(--bs-font-size-sm);
+}
+
+.review-item-body {
+    font-size: var(--bs-font-size-sm);
+    color: var(--bs-gray-600);
+    line-height: 1.5;
+    margin: 0;
+}
+
 /* -- 404 Page -- */
 .not-found-page {
     text-align: center;
