@@ -41,4 +41,11 @@ public class ReviewServiceImpl implements ReviewService {
         }
         return reviewDao.create(protocolId, userId, clampedRating, body);
     }
+
+    @Override
+    @Transactional
+    public void delete(final UUID protocolId, final UUID userId) {
+        reviewDao.findByProtocolAndUser(protocolId, userId)
+                .ifPresent(review -> reviewDao.delete(review.getId()));
+    }
 }

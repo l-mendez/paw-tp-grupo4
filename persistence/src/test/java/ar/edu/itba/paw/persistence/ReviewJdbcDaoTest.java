@@ -98,4 +98,16 @@ public class ReviewJdbcDaoTest {
         assertEquals(3, updated.getRating());
         assertEquals("Actualizado", updated.getBody());
     }
+
+    // ── delete ──
+
+    @Test
+    public void delete_existingReview_removesReview() {
+        final Review existing = reviewDao.findByProtocolAndUser(TEST_PROTOCOL_ID, USER_1_ID).orElseThrow();
+
+        reviewDao.delete(existing.getId());
+
+        assertTrue(reviewDao.findByProtocolAndUser(TEST_PROTOCOL_ID, USER_1_ID).isEmpty());
+        assertEquals(1, reviewDao.findByProtocol(TEST_PROTOCOL_ID).size());
+    }
 }

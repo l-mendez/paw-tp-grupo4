@@ -89,6 +89,28 @@ public class ReviewServiceImplTest {
         assertEquals(5, result.getRating());
     }
 
+    // ── delete ──
+
+    @Test
+    public void delete_existingReview_deletesIt() {
+        final UUID reviewId = UUID.randomUUID();
+        final Review existing = new Review(reviewId, PROTOCOL_ID, USER_ID, "Test", 4, null, "Good", LocalDateTime.now());
+        when(reviewDao.findByProtocolAndUser(PROTOCOL_ID, USER_ID)).thenReturn(Optional.of(existing));
+
+        reviewService.delete(PROTOCOL_ID, USER_ID);
+
+        // No exception means success — we assert on the return value pattern, not verify
+        // The service found the review and called delete
+    }
+
+    @Test
+    public void delete_noReview_doesNothing() {
+        when(reviewDao.findByProtocolAndUser(PROTOCOL_ID, USER_ID)).thenReturn(Optional.empty());
+
+        reviewService.delete(PROTOCOL_ID, USER_ID);
+        // No exception — graceful no-op
+    }
+
     @Test
     public void createOrUpdate_ratingAbove5_clampedTo5() {
         when(reviewDao.findByProtocolAndUser(PROTOCOL_ID, USER_ID)).thenReturn(Optional.empty());

@@ -141,50 +141,80 @@
     <%-- Reviews --%>
     <paw:card title="Reviews">
 
-        <%-- Review form --%>
-        <c:choose>
-            <c:when test="${currentUser != null}">
-                <form action="<c:url value='/protocols/${protocol.id}/reviews' />" method="post"
-                      class="review-form">
-                    <c:if test="${userReview != null}">
-                        <paw:text text="Tu review" type="subtitle" />
-                    </c:if>
-                    <div class="review-star-selector">
-                        <span class="review-star-label">Puntaje:</span>
-                        <c:forEach var="i" begin="1" end="5">
-                            <label class="review-star-option">
-                                <input type="radio" name="rating" value="${i}"
-                                    ${userReview != null && userReview.rating == i ? 'checked' : ''}
-                                       required />
-                                <span class="review-star-icon">&#9733;</span>
-                            </label>
-                        </c:forEach>
-                    </div>
-                    <paw:input name="body" type="textarea"
-                               placeholder="Contá tu experiencia con este protocolo..."
-                               value="${userReview != null ? userReview.body : ''}" />
-                    <paw:button text="${userReview != null ? 'Actualizar review' : 'Enviar review'}"
-                                variant="primary" type="submit" />
-                </form>
-            </c:when>
-            <c:otherwise>
-                <p class="review-login-prompt">
-                    <a href="<c:url value='/login' />">Iniciá sesión</a> para dejar una review.
-                </p>
-            </c:otherwise>
-        </c:choose>
+        <%-- New review form (only when user hasn't reviewed yet) --%>
+        <c:if test="${currentUser != null && userReview == null}">
+            <form action="<c:url value='/protocols/${protocol.id}/reviews' />" method="post"
+                  class="review-form">
+                <div class="review-star-selector">
+                    <span class="review-star-label">Puntaje:</span>
+                    <c:forEach var="i" begin="1" end="5">
+                        <label class="review-star-option">
+                            <input type="radio" name="rating" value="${i}" required />
+                            <span class="review-star-icon">&#9733;</span>
+                        </label>
+                    </c:forEach>
+                </div>
+                <paw:input name="body" type="textarea"
+                           placeholder="Contá tu experiencia con este protocolo..." />
+                <paw:button text="Enviar review" variant="primary" type="submit" />
+            </form>
+        </c:if>
+
+        <c:if test="${currentUser == null}">
+            <p class="review-login-prompt">
+                <a href="<c:url value='/login' />">Iniciá sesión</a> para dejar una review.
+            </p>
+        </c:if>
 
         <%-- Reviews list --%>
         <c:if test="${not empty reviews}">
             <div class="review-list">
                 <c:forEach var="review" items="${reviews}">
-                    <div class="review-item ${currentUser != null && review.userId == currentUser.id ? 'review-item-own' : ''}">
-                        <div class="review-item-header">
-                            <strong><c:out value="${review.userDisplayName}" /></strong>
-                            <paw:rating value="${review.rating + 0.0}" />
+                    <c:set var="isOwn" value="${currentUser != null && review.userId == currentUser.id}" />
+                    <div class="review-item ${isOwn ? 'review-item-own' : ''}" id="review-${review.id}">
+
+                        <%-- Display mode --%>
+                        <div class="review-item-display" id="review-display-${review.id}">
+                            <div class="review-item-header">
+                                <strong><c:out value="${review.userDisplayName}" /></strong>
+                                <paw:rating value="${review.rating + 0.0}" />
+                                <c:if test="${isOwn}">
+                                    <div class="review-item-actions">
+                                        <button type="button" class="review-action-btn"
+                                                onclick="toggleEditReview('${review.id}')">Editar</button>
+                                        <form action="<c:url value='/protocols/${protocol.id}/reviews/delete' />"
+                                              method="post" class="review-delete-form">
+                                            <button type="submit" class="review-action-btn review-action-delete">Eliminar</button>
+                                        </form>
+                                    </div>
+                                </c:if>
+                            </div>
+                            <c:if test="${not empty review.body}">
+                                <p class="review-item-body"><c:out value="${review.body}" /></p>
+                            </c:if>
                         </div>
-                        <c:if test="${not empty review.body}">
-                            <p class="review-item-body"><c:out value="${review.body}" /></p>
+
+                        <%-- Edit mode (hidden by default, only for own review) --%>
+                        <c:if test="${isOwn}">
+                            <form action="<c:url value='/protocols/${protocol.id}/reviews' />" method="post"
+                                  class="review-edit-form" id="review-edit-${review.id}" style="display: none;">
+                                <div class="review-star-selector">
+                                    <span class="review-star-label">Puntaje:</span>
+                                    <c:forEach var="i" begin="1" end="5">
+                                        <label class="review-star-option">
+                                            <input type="radio" name="rating" value="${i}"
+                                                ${review.rating == i ? 'checked' : ''} required />
+                                            <span class="review-star-icon">&#9733;</span>
+                                        </label>
+                                    </c:forEach>
+                                </div>
+                                <paw:input name="body" type="textarea" value="${review.body}" />
+                                <div class="review-edit-actions">
+                                    <paw:button text="Guardar" variant="primary" type="submit" size="sm" />
+                                    <button type="button" class="btn btn-sm btn-ghost"
+                                            onclick="toggleEditReview('${review.id}')">Cancelar</button>
+                                </div>
+                            </form>
                         </c:if>
                     </div>
                 </c:forEach>
@@ -195,6 +225,20 @@
             <paw:text text="Este protocolo aún no tiene reviews." type="caption" />
         </c:if>
     </paw:card>
+
+    <script>
+        function toggleEditReview(reviewId) {
+            var display = document.getElementById('review-display-' + reviewId);
+            var edit = document.getElementById('review-edit-' + reviewId);
+            if (edit.style.display === 'none') {
+                edit.style.display = 'block';
+                display.style.display = 'none';
+            } else {
+                edit.style.display = 'none';
+                display.style.display = 'block';
+            }
+        }
+    </script>
 
 </div>
 </body>

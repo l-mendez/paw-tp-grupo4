@@ -83,4 +83,12 @@ public class ReviewJdbcDao implements ReviewDao {
                 rating, body, reviewId.toString()
         );
     }
+
+    @Override
+    public void delete(final UUID reviewId) {
+        jdbcTemplate.update(
+                "DELETE FROM protocol_reviews WHERE id = CAST(? AS UUID)",
+                reviewId.toString()
+        );
+    }
 }

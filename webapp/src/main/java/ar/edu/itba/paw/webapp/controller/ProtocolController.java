@@ -175,6 +175,24 @@ public class ProtocolController {
         return new ModelAndView("redirect:/protocols/" + id);
     }
 
+    @RequestMapping(value = "/protocols/{id}/reviews/delete", method = RequestMethod.POST)
+    public ModelAndView deleteReview(@PathVariable("id") final String id, final HttpSession session) {
+        final User currentUser = (User) session.getAttribute("currentUser");
+        if (currentUser == null) {
+            return new ModelAndView("redirect:/login");
+        }
+
+        final UUID protocolId;
+        try {
+            protocolId = UUID.fromString(id);
+        } catch (IllegalArgumentException e) {
+            return new ModelAndView("404");
+        }
+
+        reviewService.delete(protocolId, currentUser.getId());
+        return new ModelAndView("redirect:/protocols/" + id);
+    }
+
     private static java.util.Optional<UUID> parseUuid(final String value) {
         if (value == null || value.isBlank()) {
             return java.util.Optional.empty();

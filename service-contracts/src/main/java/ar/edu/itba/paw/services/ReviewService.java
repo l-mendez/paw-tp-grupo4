@@ -10,4 +10,5 @@ public interface ReviewService {
     List<Review> getReviewsByProtocol(UUID protocolId);
     Optional<Review> getUserReview(UUID protocolId, UUID userId);
     Review createOrUpdate(UUID protocolId, UUID userId, int rating, String body);
+    void delete(UUID protocolId, UUID userId);
 }
